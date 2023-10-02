@@ -9,7 +9,7 @@ if (!function_exists('vite_tags')) {
             $entryPoints = [$entryPoints];
         }
 
-        $vite = new Vite();
+        $vite = new Vite;
 
         return $vite($entryPoints, $buildDirectory);
     }

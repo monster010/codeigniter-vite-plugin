@@ -63,8 +63,7 @@ class Vite
         if ($this->isRunningHot()) {
             array_unshift($entryPoints, '@vite/client');
 
-            echo implode(' ', array_map(fn ($entrypoint) => $this->makeTagForChunk($entrypoint, $this->hotAsset($entrypoint), null, null), $entryPoints));
-            return;
+            return implode(' ', array_map(fn ($entrypoint) => $this->makeTagForChunk($entrypoint, $this->hotAsset($entrypoint), null, null), $entryPoints));
         }
 
         $manifest = $this->manifest($buildDirectory);
