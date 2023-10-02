@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { afterEach, describe, expect, it, vi } from "vitest";
 import codeigniter from "../src";
 
@@ -7,13 +8,11 @@ describe("codeigniter-vite-plugin", () => {
   });
 
   it("handles missing configuration", () => {
-    /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
     /* @ts-ignore */
     expect(() => codeigniter()).toThrowError(
       "codeigniter-vite-plugin: missing configuration."
     );
 
-    /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
     /* @ts-ignore */
     expect(() => codeigniter({})).toThrowError(
       'codeigniter-vite-plugin: missing configuration for "input".'
