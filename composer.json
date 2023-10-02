@@ -1,0 +1,21 @@
+{
+  "name": "monster010/codeigniter-vite",
+  "description": "CodeIgniter Plugin for Vite (CodeIgniter Side)",
+  "type": "library",
+  "require": {
+    "php": ">=7.4.0"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "monster010\\CodeIgniterVite\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "monster010",
+      "email": "git@monster010.de"
+    }
+  ],
+  "minimum-stability": "dev"
+}
