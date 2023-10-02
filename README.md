@@ -13,6 +13,65 @@ This plugin configures Vite for use with a CodeIgniter backend server.
 
 This plugin is based on the [Laravel Vite plugin](https://github.com/laravel/vite-plugin).
 
+## Installation
+
+Install with composer:
+
+```shell
+composer require monster010/codeigniter-vite-plugin
+```
+
+Publish default resources (package.json, vite.config.js, tailwind.config.js, etc.)
+
+```shell
+php spark vite:publish
+```
+
+Alternative:
+
+```
+// vite.config.js
+import { defineConfig } from 'vite';
+import codeigniter from "codeigniter-vite-plugin";
+
+export default defineConfig({
+    plugins: [
+        codeigniter([
+            'resources/css/app.css',
+            'resources/js/app.js',
+        ]),
+    ],
+});
+```
+
+## Getting Started
+
+- Install your node dependencies: `npm install`
+- Start vite server: `npm run dev`
+- Loading helper `helper('vite')`
+
+### Loading Your Scripts and Styles
+
+```
+<!doctype html>
+<head>
+    {{-- ... --}}
+
+    <?= vite_tags(['resources/css/app.css', 'resources/js/app.js']) ?>
+</head>
+```
+
+Alternative:
+
+```
+<!doctype html>
+<head>
+    {{-- ... --}}
+
+    <?= vite_tags('resources/js/app.js') ?>
+</head>
+```
+
 ## License
 
 The CodeIgniter Vite plugin is open-sourced software licensed under the [MIT license](LICENSE.md).
