@@ -1,5 +1,5 @@
 {
-  "name": "monster010/codeigniter-vite",
+  "name": "monster010/codeigniter-vite-plugin",
   "description": "CodeIgniter Plugin for Vite (CodeIgniter Side)",
   "type": "library",
   "require": {
