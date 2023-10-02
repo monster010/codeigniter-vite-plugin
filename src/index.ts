@@ -127,7 +127,7 @@ function resolveCodeIgniterPlugin(
 
       const ssr = !!userConfig.build?.ssr;
       const env = loadEnv(mode, userConfig.envDir || process.cwd(), "");
-      const assetUrl = env["app.baseURL"] ?? "";
+      const assetUrl = env["app.assetURL"] ?? "";
       const serverConfig =
         command === "serve"
           ? resolveDevelopmentEnvironmentServerConfig(pluginConfig.detectTls) ??
@@ -319,7 +319,7 @@ function resolvePluginConfig(
   config: string | PluginConfig | string[]
 ): Required<PluginConfig> {
   if (typeof config === "undefined") {
-    throw new Error("codeigniter-vite-plugin: missing configuration");
+    throw new Error("codeigniter-vite-plugin: missing configuration.");
   }
 
   if (typeof config === "string" || Array.isArray(config)) {
