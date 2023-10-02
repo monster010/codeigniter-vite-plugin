@@ -52,11 +52,6 @@ class Vite
         return is_file($this->hotFile());
     }
 
-    public function test($entryPoints, $buildDirectory = null)
-    {
-        return $this->__invoke($entryPoints, $buildDirectory);
-    }
-
     public function __invoke($entryPoints, $buildDirectory = null)
     {
         if (!is_array($entryPoints)) {
@@ -145,7 +140,7 @@ class Vite
 
         $preloads = array_map(fn ($args) => $this->makePreloadTagForChunk(...$args), $preloads);
 
-        echo implode(' ', $preloads) . implode(' ', $stylesheets) . implode(' ', $scripts);
+        return implode(' ', $preloads) . implode(' ', $stylesheets) . implode(' ', $scripts);
     }
 
     protected function makeTagForChunk($src, $url, $chunk, $manifest)
