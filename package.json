@@ -1,0 +1,54 @@
+{
+  "name": "codeigniter-vite-plugin",
+  "version": "0.0.1",
+  "author": {
+    "email": "info@monster010.de",
+    "name": "monster010",
+    "url": "https://monster010.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/monster010/codeigniter-vite-plugin"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && yarn run build-plugin-types && yarn run build-plugin-esm && yarn run build-plugin-cjs && yarn run copy-index",
+    "copy-index": "cp src/dev-server-index.html dist/",
+    "build-plugin-types": "tsc --emitDeclarationOnly",
+    "build-plugin-cjs": "esbuild src/index.ts --platform=node --format=cjs --outfile=dist/index.cjs --define:import.meta.url=import_meta_url --inject:./import.meta.url-polyfill.js",
+    "build-plugin-esm": "esbuild src/index.ts --platform=node --format=esm --outfile=dist/index.mjs",
+    "lint": "eslint --ext .ts ./src ./tests",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "esbuild": "^0.19.4",
+    "eslint": "^8.50.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.6"
+  },
+  "peerDependencies": {
+    "vite": "^3.0.0 || ^4.0.0"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "picocolors": "^1.0.0",
+    "vite-plugin-full-reload": "^1.0.5"
+  }
+}
