@@ -133,7 +133,7 @@ class Vite
 			}
         }
 
-        [$stylesheets, $scripts] = $this->array_chunk_by(array_unique($tags), fn ($prev, $tag) => str_starts_with($tag, '<link')); // Rework
+        [$stylesheets, $scripts] = $this->array_partition(array_unique($tags), fn ($prev, $tag) => str_starts_with($tag, '<link')); // Rework
 
         usort(array_unique($preloads), fn ($args) => $this->isStylesheetPath(...$args));
 
@@ -363,44 +363,18 @@ class Vite
         });
     }
 
-    private function array_chunk_by(array $array, callable $callback, bool $preserve_keys = false): array
-    {
-        $reducer = function (array $carry, $key) use ($array, $callback, $preserve_keys) {
-            $current = $array[$key];
-            $length  = count($carry);
-
-            if ($length > 0) {
-                $chunk = &$carry[$length - 1];
-                end($chunk);
-                $previous = $chunk[key($chunk)];
-
-                if ($callback($previous, $current)) {
-                    // Split, create a new group.
-                    if ($preserve_keys) {
-                        $carry[] = [$key => $current];
-                    } else {
-                        $carry[] = [$current];
-                    }
-                } else {
-                    // Put into the $currentrent group.
-                    if ($preserve_keys) {
-                        $chunk[$key] = $current;
-                    } else {
-                        $chunk[] = $current;
-                    }
-                }
-            } else {
-                // The first group.
-                if ($preserve_keys) {
-                    $carry[] = [$key => $current];
-                } else {
-                    $carry[] = [$current];
-                }
-            }
-
-            return $carry;
-        };
-
-        return array_reduce(array_keys($array), $reducer, []);
-    }
+    private function array_partition(array $array, callable $callback) {
+		$passed = [];
+		$failed = [];
+		
+		foreach($array as $key => $item) {
+			if($callback($item, $key)) {
+				$passed[$key] = $item;
+			} else {
+				$failed[$key] = $item;
+			}
+		}
+		
+		return [$passed, $failed];
+	}
 }
