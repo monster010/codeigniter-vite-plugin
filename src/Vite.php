@@ -106,31 +106,31 @@ class Vite
                     ];
                 }
             }
-        }
 
-        $tags[] = $this->makeTagForChunk(
-            $epoint,
-            $this->assetPath("{$buildDirectory}/{$chunk['file']}"),
-            $chunk,
-            $manifest
-        );
+			$tags[] = $this->makeTagForChunk(
+				$epoint,
+				$this->assetPath("{$buildDirectory}/{$chunk['file']}"),
+				$chunk,
+				$manifest
+			);
 
-        foreach ($chunk['css'] ?? [] as $css) {
-            $partialManifest = $this->array_where($manifest, 'file', $css);
+			foreach ($chunk['css'] ?? [] as $css) {
+				$partialManifest = $this->array_where($manifest, 'file', $css);
 
-            $preloads[] = [
-                array_key_first($partialManifest),
-                $this->assetPath("{$buildDirectory}/{$css}"),
-                $partialManifest[array_key_first($partialManifest)],
-                $manifest
-            ];
+				$preloads[] = [
+					array_key_first($partialManifest),
+					$this->assetPath("{$buildDirectory}/{$css}"),
+					$partialManifest[array_key_first($partialManifest)],
+					$manifest
+				];
 
-            $tags[] = [
-                array_key_first($partialManifest),
-                $this->assetPath("{$buildDirectory}/{$css}"),
-                $partialManifest[array_key_first($partialManifest)],
-                $manifest
-            ];
+				$tags[] = [
+					array_key_first($partialManifest),
+					$this->assetPath("{$buildDirectory}/{$css}"),
+					$partialManifest[array_key_first($partialManifest)],
+					$manifest
+				];
+			}
         }
 
         [$stylesheets, $scripts] = $this->array_chunk_by(array_unique($tags), fn ($prev, $tag) => str_starts_with($tag, '<link')); // Rework
