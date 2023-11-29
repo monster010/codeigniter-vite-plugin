@@ -135,7 +135,7 @@ class Vite
 
         [$stylesheets, $scripts] = $this->array_partition(array_unique($tags), fn ($prev, $tag) => str_starts_with($tag, '<link')); // Rework
 
-        usort(array_unique($preloads), fn ($args) => $this->isStylesheetPath(...$args));
+        usort($preloads, fn ($args) => $this->isStylesheetPath(...$args));
 
         $preloads = array_map(fn ($args) => $this->makePreloadTagForChunk(...$args), $preloads);
 
