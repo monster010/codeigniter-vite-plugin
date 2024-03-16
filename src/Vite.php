@@ -98,42 +98,43 @@ class Vite
                         $manifest
                     ];
 
-                    $tags[] = [
+                    $tags[] = $this->makeTagForChunk(
                         array_key_first($partialManifest),
                         $this->assetPath("{$buildDirectory}/{$css}"),
                         $partialManifest[array_key_first($partialManifest)],
                         $manifest
-                    ];
+                    );
                 }
             }
 
-			$tags[] = $this->makeTagForChunk(
-				$epoint,
-				$this->assetPath("{$buildDirectory}/{$chunk['file']}"),
-				$chunk,
-				$manifest
-			);
-
-			foreach ($chunk['css'] ?? [] as $css) {
-				$partialManifest = $this->array_where($manifest, 'file', $css);
-
-				$preloads[] = [
-					array_key_first($partialManifest),
-					$this->assetPath("{$buildDirectory}/{$css}"),
-					$partialManifest[array_key_first($partialManifest)],
-					$manifest
-				];
-
-				$tags[] = [
-					array_key_first($partialManifest),
-					$this->assetPath("{$buildDirectory}/{$css}"),
-					$partialManifest[array_key_first($partialManifest)],
-					$manifest
-				];
-			}
+            $tags[] = $this->makeTagForChunk(
+                $epoint,
+                $this->assetPath("{$buildDirectory}/{$chunk['file']}"),
+                $chunk,
+                $manifest
+            );
+    
+    
+            foreach ($chunk['css'] ?? [] as $css) {
+                $partialManifest = $this->array_where($manifest, 'file', $css);
+    
+                $preloads[] = [
+                    array_key_first($partialManifest),
+                    $this->assetPath("{$buildDirectory}/{$css}"),
+                    $partialManifest[array_key_first($partialManifest)],
+                    $manifest
+                ];
+    
+                $tags[] = $this->makeTagForChunk(
+                    array_key_first($partialManifest),
+                    $this->assetPath("{$buildDirectory}/{$css}"),
+                    $partialManifest[array_key_first($partialManifest)],
+                    $manifest
+                );
+            }
         }
 
-        [$stylesheets, $scripts] = $this->array_partition(array_unique($tags), fn ($prev, $tag) => str_starts_with($tag, '<link')); // Rework
+        [$stylesheets, $scripts] = $this->array_partition(array_unique($tags), fn ($prev, $tag) => substr($tag, 0, 5) === '<link'); // Rework
 
         usort($preloads, fn ($args) => $this->isStylesheetPath(...$args));
 
