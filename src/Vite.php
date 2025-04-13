@@ -121,23 +121,22 @@ class Vite
                 $preloads[] = [
                     array_key_first($partialManifest),
                     $this->assetPath("{$buildDirectory}/{$css}"),
-                    $partialManifest[array_key_first($partialManifest)],
+		    $this->array_first($partialManifest),
                     $manifest
                 ];
     
                 $tags[] = $this->makeTagForChunk(
                     array_key_first($partialManifest),
                     $this->assetPath("{$buildDirectory}/{$css}"),
-                    $partialManifest[array_key_first($partialManifest)],
+		    $this->array_first($partialManifest),
                     $manifest
                 );
             }
         }
 
-        [$stylesheets, $scripts] = $this->array_partition(array_unique($tags), fn ($prev, $tag) => substr($tag, 0, 5) === '<link'); // Rework
+        [$stylesheets, $scripts] = $this->array_partition(array_unique($tags), fn ($tag) => str_starts_with($tag, '<link')); // Rework
 
-        usort($preloads, fn ($args) => $this->isStylesheetPath(...$args));
-
+        $preloads = $this->array_sortByDesc($preloads, fn ($args) => $this->isStylesheetPath($args[1]));
         $preloads = array_map(fn ($args) => $this->makePreloadTagForChunk(...$args), $preloads);
 
         return implode(' ', $preloads) . implode(' ', $stylesheets) . implode(' ', $scripts);
@@ -172,8 +171,7 @@ class Vite
 
         $this->preloadedAssets[$url] = $this->parseAttributes(
             array_map(function ($elem) {
-                unset($elem['href']);
-                return $elem;
+                return $elem === 'href' ?? $elem;
             }, $attributes)
         );
 
@@ -258,8 +256,8 @@ class Vite
         ];
 
         $attributes = $this->integrityKey !== false
-            ? ['integrity' => $chunk[$this->integrityKey] ?? false]
-            : [];
+            ? array_merge($attributes, ['integrity' => $chunk[$this->integrityKey] ?? false])
+            : $attributes;
 
         return $attributes;
     }
@@ -377,5 +375,54 @@ class Vite
 		}
 		
 		return [$passed, $failed];
+	}
+
+	private function array_first($arr, $default = null) {
+		$obj = new \ArrayObject($arr);
+		
+		$it = $obj->getIterator();
+		
+		if(!$it->valid()) {
+			return $this->array_value($default);
+		}
+		
+		return $it->current();
+	}
+	
+	private function array_value($value, ...$args) {
+		return $value instanceof \Closure ? $value(...$args) : $value;
+	}
+	
+	private function array_sortBy($array, $callback, $options = SORT_REGULAR, $descending = false) {
+		$results = [];
+		$callback = $this->valueRetriever($callback);
+		
+		foreach($array as $key => $value) {
+			$results[$key] = $callback($value, $key);
+		}
+		
+		$descending ? arsort($results, $options) : asort($results, $options);
+		
+		foreach(array_keys($results) as $key) {
+			$results[$key] = $array[$key];
+		}
+		
+		return $results;
+	}
+	
+	private function array_sortByDesc($array, $callback, $options = SORT_REGULAR) {
+		return $this->array_sortBy($array, $callback, $options, true);
+	}
+	
+	private function useAsCallable($value) {
+		return !is_string($value) && is_callable($value);
+	}
+	
+	private function valueRetriever($value) {
+		if($this->useAsCallable($value)) {
+			return $value;
+		}
+		
+		return null;
 	}
 }
